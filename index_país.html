@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busca de País</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
+
+
+<body>
+    <div class="text-center">
+        <h1>Consulta de Países do IBGE</h1>
+        <div class="container">
+            <form>
+                <input id="nomePais" class="form-control" type="text" placeholder="Digite a abreviação do País. Exemplo: BR">
+                <a class="btn btn-primary" onclick="buscarPais(document.getElementById('nomePais').value)">Pesquisar</a>
+            </form>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="row">
+          <div class="col-sm-12">
+            <h3 id='nome/abreviado'></h3>
+            <p id='localizacao/nome'></p>
+            <p id='governo/capital/nome'></p>
+            <p id='area/total'></p>
+            <p id='linguas/nome'></p>
+            <h4 id='historico'></h4> 
+          </div>
+        </div>
+      </div>
+
+
+<script>
+    function buscarPais(paises){
+        document.getElementById('nome/abreviado').textContent = '';
+        document.getElementById('localizacao/nome').textContent = '';
+        document.getElementById('area/total').textContent = '';
+        document.getElementById('governo/capital/nome').textContent = '';
+        document.getElementById('linguas/nome').textContent = '';
+        document.getElementById('historico').textContent = '';
+    
+    var url = "https://servicodados.ibge.gov.br/api/v1/paises/" + paises;
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+
+        // Preenche os elementos com os dados da resposta
+        document.getElementById('nome/abreviado').textContent = "Nome do País: " + data[0]['nome']['abreviado'];
+        document.getElementById('localizacao/nome').textContent = "Continente: " + data[0]['localizacao']['regiao']['nome'];
+        document.getElementById('area/total').textContent ="Área total (em km²): " + data[0]['area']['total'];
+        document.getElementById('governo/capital/nome').textContent = "Capital: " + data[0]['governo']['capital']['nome'];
+        document.getElementById('linguas/nome').textContent ="Língua Principal: " + data[0]['linguas'][0]['nome'];
+        document.getElementById('historico').textContent ="Histórico: " + data[0]['historico'];
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+      });
+    }
+    
+</script>
+</body>
+</html>
